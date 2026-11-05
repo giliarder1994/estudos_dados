@@ -1,0 +1,1 @@
+SELECT nome_navio, mes_ano FROM cap02.TB_NAVIOS;
