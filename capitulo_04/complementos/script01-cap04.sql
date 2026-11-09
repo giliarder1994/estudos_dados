@@ -40,7 +40,6 @@ WHERE P.id_cliente = C.id_cliente
 
 # INNER JOIN e Outras Cláusulas SQL
 
-
 # Inner Join - Padrão ANSI
 SELECT P.id_pedido, C.nome_cliente
 FROM cap04.TB_PEDIDOS AS P
@@ -51,7 +50,7 @@ ON P.id_cliente = C.id_cliente;
 # JOIN sem INNER ainda é INNER
 SELECT C.nome_cliente, P.id_pedido
 FROM cap04.TB_CLIENTES AS C
-JOIN cap04.TB_PEDIDOS AS P 
+   cap04.TB_PEDIDOS AS P 
 ON C.id_cliente = P.id_cliente;
 
 
@@ -118,11 +117,11 @@ ORDER BY C.nome_cliente;
 
 # Solução com mais detalhes
 SELECT 
-     CASE 
+    CASE 
       WHEN P.data_pedido IS NULL THEN "Sem Pedido"
             ELSE P.data_pedido
     END AS data_pedido,
-        CASE 
+    CASE 
       WHEN C.nome_cliente IS NULL THEN "Sem Pedido"
             ELSE C.nome_cliente
     END AS nome_cliente,
