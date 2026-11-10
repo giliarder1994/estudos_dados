@@ -1,0 +1,1 @@
+SELECT * FROM cap03.tb_dados;
