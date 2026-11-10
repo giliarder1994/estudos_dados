@@ -155,6 +155,70 @@ SELECT * FROM tb_atleta LIMIT 10;
 -   Para caminhos no Windows, barras normais (`/`) podem ser utilizadas
     no caminho informado ao `LOAD DATA LOCAL INFILE`.
 
+---
+## 7. Corrigir problemas de codificação de caracteres (UTF-8)
+
+Durante a importação, pode aparecer uma mensagem como:
+
+```text
+ERROR 1300 (HY000): Invalid utf8mb4 character string: 'C?te d'
+```
+
+Esse erro pode indicar que o MySQL encontrou caracteres que não correspondem à codificação esperada.
+
+Isso costuma acontecer quando o arquivo CSV foi salvo em uma codificação diferente daquela informada no comando de importação.
+
+### 7.1. Primeira tentativa: informar a codificação UTF-8
+
+Se o arquivo CSV estiver realmente salvo em UTF-8, experimente acrescentar `CHARACTER SET utf8mb4`:
+
+```sql
+LOAD DATA LOCAL INFILE 'C:/dados/Teams.csv'
+INTO TABLE tb_time
+CHARACTER SET utf8mb4
+FIELDS TERMINATED BY ';'
+ENCLOSED BY '"'
+LINES TERMINATED BY '\r\n'
+IGNORE 1 ROWS;
+```
+
+O parâmetro `CHARACTER SET utf8mb4` informa ao MySQL como interpretar os caracteres presentes no arquivo.
+
+**Importante:** esse parâmetro não converte automaticamente qualquer arquivo para UTF-8. Ele deve corresponder à codificação real do CSV.
+
+### 7.2. Verificar e converter a codificação do CSV
+
+Se o erro continuar, confira como o arquivo está salvo:
+
+1. Abra o arquivo `Teams.csv` no Bloco de Notas do Windows.
+2. Selecione Arquivo → Salvar como.
+3. Na janela de salvamento, localize a opção Codificação/Encoding.
+4. Selecione UTF-8.
+5. Salve o arquivo novamente. Se necessário, mantenha uma cópia do original.
+
+Depois, tente executar novamente o comando de importação.
+
+Referência: [Como alterar a codificação de um arquivo para UTF-8](https://cros.ec.europa.eu/book-page/how-can-user-change-encoding-file-utf-8).
+
+### 7.3. Entender os três pontos envolvidos
+
+Para que os caracteres sejam importados corretamente, precisamos considerar:
+
+- **Arquivo CSV:** codificação utilizada para salvar o arquivo.
+- **LOAD DATA:** codificação informada durante a importação.
+- **Tabela MySQL:** conjunto de caracteres utilizado nas colunas.
+
+Para conferir a definição da tabela, execute:
+
+```sql
+SHOW CREATE TABLE tb_time;
+```
+
+Verifique se as colunas de texto utilizam um conjunto de caracteres compatível, como `utf8mb4`.
+
+**Dica:** não altere a codificação da tabela sem antes conferir sua estrutura e os dados existentes. Primeiro identifique a codificação real do CSV e informe essa codificação corretamente na importação.
+
+
 ------------------------------------------------------------------------
 
 **Objetivo do estudo:** praticar a importação de grandes arquivos CSV
