@@ -1,0 +1,1 @@
+SELECT CONCAT(inv_nodes, ' ' ,quadrante) AS posicao_tumor FROM cap03.tb_dados;
